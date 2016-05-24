@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="Database project">
+    <meta name="author" content="Jingchen_Cao">
+
+    <title>学生登录</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/html/starter-template.css" rel="stylesheet">
+
+    <!-- ioicon include -->
+    <link href="/icon/ionicons-2.0.1/css/ionicons.min.css" rel="stylesheet">
+
+    <!-- font awesome include -->
+    <link href="/icon/font-awesome-4.6.1/css/font-awesome.min.css" rel='stylesheet'>
+
+    <!-- 详细信息用css -->
+    <link rel="stylesheet" href="/html/advanced-template.css">
+    
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <script src="/js/jquery.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">宿舍管理系统</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="index.html">主页</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><a href="author.html">作者</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="starter-template">
+        <h1>宿舍管理系统</h1>
+        <p class="lead">学生模式</p>
+      </div>
+
+        <div class="col-sm-7">
+          <ul id="myTab" class="nav nav-tabs">
+             <li class="active"><a href="#home" data-toggle="tab">
+                个人信息</a>
+             </li>
+             <li><a href="#doc" data-toggle="tab">权限说明</a></li>
+             <li class="dropdown">
+                <a href="#" id="default" class="dropdown-toggle" 
+                   data-toggle="dropdown">操作<b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+                   <li>
+                     <a href="#request_dorm" tabindex="-1" data-toggle='tab'>查询宿舍信息</a>
+                   </li>
+                   <li>
+                      <a href="#change_dorm" tabindex="-1" data-toggle="tab">提交换宿、退宿申请</a>
+                   </li>
+                   <li>
+                      <a href="#fix" tabindex="-1" data-toggle="tab">保修和反馈</a>
+                   </li>
+                   <li>
+                      <a href="#discipline" tabindex='-1' data-toggle='tab'>查询违纪情况</a>
+                   </li>
+                </ul>
+             </li>
+          </ul>
+          <div id="myTabContent" class="tab-content">
+             <div class="tab-pane fade in active" id="home">
+                <h3>我的个人信息</h3>
+                <p>名字：{{  my_name  }}</p>
+                <p>班级：{{  my_class  }}</p>
+                <p>学号：{{  my_id  }}</p>
+                <p>学院：{{  my_college  }}</p>
+                <p>账号：{{  my_account  }}</p>
+                <label style='clear:both'>
+                  <span>修改密码 :</span>
+                  <input id="change_pwd" type="text">
+                </label>
+                <button class="btn btn-primary" id="confirm_change_pwd">确认</button>
+             </div>
+             <div class="tab-pane fade" id="doc">
+              <p>•查询自己的基本信息以及宿舍室友</p>
+              <p>•提交变更宿舍、退宿申请</p>
+              <p>•报修和反馈</p>
+              <p>•查询违纪情况</p>
+             </div>
+             <div class="tab-pane fade" id="request_dorm">
+                <form class='basic-grey' style='margin:40px;height:400px'>
+                  <h3>我的宿舍信息</h3>
+                  <hr>
+                  <h4>楼号：{{  my_dorm_building  }}</h4>
+                  <h4>房号：{% if my_dorm_room != null %}{{  my_dorm_room  }}{% else %}N/A{% endif %}</h4>
+                  <h4>床号：{{  my_bed_num  }}</h4>
+                  <h4>宿舍容量：{% if my_dorm_capacity != null %}{{  my_dorm_capacity  }}{% else %}N/A{% endif %}</h4>
+                  <h4>宿舍人数：{{  my_mates_num  }}</h4>
+                  <h4>宿舍人员：{% if roommates != null %}{% for mate in roommates %}{{  mate  }}<br>{% endfor %}{% else %}N/A{% endif %}</h4>
+                </form>
+             </div>
+             <div class="tab-pane fade" id="change_dorm">
+                <form class='basic-grey' style='margin:40px;height:400px'>
+                  <h3>退宿换宿申请</h3>
+                  <hr>
+                  <div class="tabbable">
+                    <div class='col-sm-2'>
+                      <ul class="nav nav-tabs nav-stacked">
+                        <li class="active">
+                          <a href="#panel_change" data-toggle="tab" style='height:130px'>换宿</a>
+                        </li>
+                        <li>
+                          <a href="#panel_abandon" data-toggle="tab" style='height:130px'>退宿</a>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class='col-sm-10'>
+                      <div class="tab-content">
+                        <div class="tab-pane active" id="panel_change">
+                          <label style='clear:both'>
+                            <span style='padding:0'>目标楼号 :</span>
+                            <input id="building_destination" type="text" style='width:70%'>
+                          </label>
+                          <div style='height:50px'></div>
+                          <div style = "height:61px"></div>
+                          <button class='btn btn-success' id='change_dorm_confirm'>确认</button>
+                        </div>
+                        <div class="tab-pane" id="panel_abandon">
+                          <p>真的要退宿吗</p>
+                          <img src="/image/hehe.jpg">
+                          <div style='height:40px'></div>
+                          <button class='btn btn-success' id='abandon_dorm_confirm'>确认</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+             </div>
+             <div class="tab-pane fade" id='fix'>
+              <h3>保修和反馈</h3>
+               <div class="row-fluid">
+                  <div class="col-xs-4">
+                    <h4>设备列表</h4>
+                    <div style="overflow:auto;width:100%;height:400px;border:1px solid black;border-radius:10px; padding:5px;">
+                      <div class="btn-group-vertical" data-toggle="buttons" style='width:100%'>
+                        {% for equ in equipments %}
+                        <label class='btn btn-default' onclick="showEquipment('{{ equ['id'] }}')">
+                          <input type='radio'>{{ equ['name'] }}
+                        </label>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xs-8">
+                    <form class='basic-grey' style='margin:0px;height:400px; margin-left:40px; margin-top:40px'>
+                      <h4>设备信息</h4>
+                      <p>设备ID：<span id='dorm_equip_id'></span></p>
+                      <p>安装时间：<span id='dorm_equip_time'></span></p>
+                      <p>状态：<span id='dorm_equip_state'></span></p>
+                      <div align='center' style='margin-bottom:10px'>
+                        <div style="overflow:auto; width:90%; height:170px; border:1px solid black; border-radius:10px; background:#555" id="equipment_feedback">
+                          维修记录
+                        </div>
+                      </div>
+                      <button class='btn btn-warning' id="report_a_repair">报修</button>
+                    </form>
+                  </div>
+                </div>
+             </div>
+             <div class="tab-pane fade" id='discipline'>
+                <h4>我的违纪情况</h4>
+                <div style="overflow:auto; width:100%; height:400px; border-radius:10px; background:#555" id="mydiscipline" align='center'>
+                  {% for disc in disciplines %}
+                    <div style='background:#EBEBEB; border-radius:10px; width:80%; margin:20px'>
+                      <p>违纪单号：{{  disc.id  }}</p>
+                      <p>违纪日期：{{  disc.date  }}</p>
+                      <p>违纪内容：{{  disc.content  }}</p>
+                    </div>
+                  {% endfor %}
+                </div>
+             </div>
+          </div>
+          <script>
+             $(function () {
+                $('#myTab li:eq(1) a').tab('show');
+             });
+          </script>
+          <script src='/js/student.js'></script>
+        </div>
+        <div style='position: fixed; bottom: 20px;right: 20px; opacity: 0.8;'>
+            <button class='btn' style='background-color:black; height:70px; width:70px' onclick='inPageRefresh()'>
+              <i class='ion-refresh' style='font-size:40px;color:grey;'></i>
+            </button>
+        </div>
+    </div><!--.container -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    
+
+    <!-- set background picture -->
+    <script src="/js/backstretch.min.js"></script>
+    <script src="/js/set_bg.js"></script>
+
+  </body>
+</html>

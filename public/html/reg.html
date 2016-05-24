@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="Database project">
+    <meta name="author" content="Jingchen_Cao">
+
+    <title>注册账号</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="starter-template.css" rel="stylesheet">
+
+    <!-- ioicon include -->
+    <link href="../icon/ionicons-2.0.1/css/ionicons.min.css" rel="stylesheet">
+
+    <!-- font awesome include -->
+    <link href="../icon/font-awesome-4.6.1/css/font-awesome.min.css" rel='stylesheet'>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../js/jquery.js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">宿舍管理系统</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="index.html">主页</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><a href="author.html">作者</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="starter-template">
+        <h1>宿舍管理系统</h1>
+        <p class="lead">怨念的数据库PJ</p>
+      </div>
+
+        <div class="col-sm-6 col-sm-offset-3">
+          <div class="col-sm-9 col-sm-offset-2">
+            <div class="form-top">
+                <div class="form-top-left">
+                    <h3>注册一个新账户</h3>
+                    <p>请输入注册信息</p>
+                </div>
+                <div class="form-top-right">
+                    <i class="ion-ios-cloud"></i>
+                </div>
+            </div>
+            <div class="form-bottom">
+				<!-- input username -->
+                <div class="form-group">
+                  <label class="sr-only" for="form-username">用户名</label>
+                  <input id='username_input' type="text" name="form-username" placeholder="用户名..." class="form-username form-control" id="form-username">
+                </div>
+				<!-- input password -->
+                <div class="form-group">
+                  <label class="sr-only" for="form-password">密码</label>
+                  <input id='password_input' type="password" name="form-password" placeholder="密码..." class="form-password form-control" id="form-password">
+                </div>
+                <div class='form-group'>
+                  <label for="form-password" class="sr-only">确认密码</label>
+                  <input id='password_confirm_input' type="password" name='form-password' placeholder='确认密码...' class='form-password form-control' id='form-password-confirmation'>
+                </div>
+                <p class='collapse' style='color:red' id='warning_words1'>两次输入的密码不相同，请重新输入</p>
+                <p class='collapse' style='color:red' id='warning_words2'>该用户名已经存在，请重新选择</p>
+                <p class="collapse" style='color:red' id='warning_words3'>注册成功，请登陆操作，等待超级管理员分配</p>
+                <p class="collapse" style='color:red' id='warning_words4'>密码不能为空</p>
+                <p class="collapse" style="color:red" id='warning_words5'>请选择账户类型</p>
+				<!-- select account type -->
+				<div class="form-group">
+					<div class="btn-group" data-toggle="buttons">
+   						<label class="btn btn-default">
+      						<input type="radio" name="options" value="instructor"> 辅导员
+   						</label>
+   						<label class="btn btn-default">
+      						<input type="radio" name="options" value="admin"> 宿管大妈
+   						</label>
+					</div>
+				</div>
+				<!-- confirm button -->
+				<div class="form-group">
+                	<button class="bton" id='upload_button' >确认</button>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <!-- reg.js -->
+      <script src='../js/reg.js'></script>
+
+    </div><!-- /.container -->
+
+    <!-- set background picture -->
+    <script src="../js/backstretch.min.js"></script>
+    <script src="../js/set_bg.js"></script>
+
+  </body>
+</html>

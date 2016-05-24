@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="Database project">
+    <meta name="author" content="Jingchen_Cao">
+
+    <title>宿舍管理员登录</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/html/starter-template.css" rel="stylesheet">
+
+    <!-- ioicon include -->
+    <link href="/icon/ionicons-2.0.1/css/ionicons.min.css" rel="stylesheet">
+
+    <!-- font awesome include -->
+    <link href="/icon/font-awesome-4.6.1/css/font-awesome.min.css" rel='stylesheet'>
+
+    <!-- 详细信息用css -->
+    <link rel="stylesheet" href="/html/advanced-template.css">
+    
+    <script src='/js/js.cookie-2.1.1.min.js'></script>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <script src="/js/jquery.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+  </head>
+
+<body>
+
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">宿舍管理系统</a>
+      </div>
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="index.html">主页</a></li>
+          <li><a href="about.html">关于</a></li>
+          <li><a href="author.html">作者</a></li>
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <div class="starter-template">
+      <h1>宿舍管理系统</h1>
+      <p class="lead">宿舍管理员模式</p>
+    </div>
+
+    <div class="col-sm-8">
+
+      <ul id="myTab" class="nav nav-tabs">
+        <li class="active">
+          <a href="#home" data-toggle="tab">个人信息</a>
+        </li>
+        <li>
+          <a href="#doc" data-toggle="tab">权限说明</a>
+        </li>
+        <li class="dropdown">
+          <a href="#" id="default" class="dropdown-toggle" data-toggle="dropdown">操作
+            <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li>
+              <a href="#dorm_distribution" tabindex="-1" data-toggle='tab'>分配宿舍</a>
+            </li>
+            <li>
+              <a href="#equipment_info" tabindex="-1" data-toggle="tab">设备维护</a>
+            </li>
+            <li>
+              <a href="#equipment_fix" tabindex="-1" data-toggle="tab">日常保修</a>
+            </li>
+            <li>
+              <a href="#process_displine" tabindex='-1' data-toggle='tab'>违纪处理</a>
+            </li>
+            <li>
+              <a href="#process_application" tabindex='-1' data-toggle='tab'>申请处理</a>
+            </li>
+            <li>
+              <a href="#process_room" tabindex='-1' data-toggle='tab'>处理房间</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <div id="myTabContent" class="tab-content">
+
+        <div class="tab-pane fade in active" id="home">
+          <h3>我的个人信息</h3>
+          <p>账户名：{{  my_username  }}</p>
+          <p>姓名：{{  my_name|title  }}</p>
+          <p>管理楼号：{{  my_building  }}</p>
+          <p>住宿人数：{{  my_stu_num  }}</p>
+          <label style='clear:both'>
+            <span>修改密码 :</span>
+            <input id="change_pwd" type="text">
+          </label>
+          <button class="btn btn-primary" id="confirm_change_pwd">确认</button>
+        </div>
+
+        <div class="tab-pane fade" id="doc">
+          <p>•分配宿舍</p>
+          <p>楼号、寝室号（寝室容量）、床号</p>
+          <p>自动分配：按学号先后等规则</p>
+          <p>宿舍调整：学生提出申请，辅导员批准，宿舍管理员确认</p>
+          <p>•设备维护</p>
+          <p>增加、删除、修改设备状态等信息</p>
+          <p>设备有唯一的编号、安装日期、目前状态等信息</p>
+          <p>•日常保修</p>
+          <p>处理学生提交的保修申请</p>
+          <p>报修后的学生反馈和报修单状态修改</p>
+          <p>•违纪处理</p>
+          <p>违纪情况反馈给辅导员和学生</p>
+        </div>
+
+        <div class="tab-pane fade" id="equipment_info">
+          <div class="row-fluid">
+            <div class="col-xs-4">
+              <h4>设备列表</h4>
+              <div style="overflow:auto;width:100%;height:400px;border:1px solid black;border-radius:10px; padding:5px;">
+                <div class="btn-group-vertical" data-toggle="buttons" style='width:100%'>
+                  {% for equip in equipments %}
+                    <label class='btn btn-default' onclick="showEquipment('{{ equip['id'] }}')">
+                      <input type='radio'>{{ equip['name'] }}
+                    </label>
+                  {% endfor %}
+                  <label onclick="showEquipment('NULL')" class="btn btn-default">
+                    <input type="radio">新建设备
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-8">
+              <form class='basic-grey' style='margin:40px;height:400px; margin-left:0px'>
+                <h4>设备信息</h4>
+                <label style='clear:both'>
+                  <span>ID :</span>
+                  <input id="equip_id" type="text" disabled='disabled'>
+                </label>
+                <label style='clear:both'>
+                  <span>名称 :</span>
+                  <input id="equip_name" type="text">
+                </label>
+                <label style='clear:both'>
+                  <span>安装时间 :</span>
+                  <input id="equip_time" type="text">
+                </label>
+                <label style='clear:both'>
+                  <span>所在房间 :</span>
+                  <input id="equip_room_num" type="text">
+                </label>
+                <label style='clear:both'>
+                  <span>状态：</span>
+                  <input id = 'equip_state' type='text' disabled='disabled'>
+                </label>
+                <div style='height:20px'></div>
+                <button class='btn btn-success' id='change_equipment'>确认</button>
+                <button class='btn btn-danger' id='remove_equipment'>删除设备</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id='process_application'>
+          <div class="row-fluid">
+            <div class="col-xs-4">
+              <h4>申请列表</h4>
+              <div style="overflow:auto;width:100%;height:400px;border:1px solid black;border-radius:10px; padding:5px;">
+                <div class="btn-group-vertical" data-toggle="buttons" style='width:100%'>
+                  {% for apply in applyments %}
+                    <label class='btn btn-default' onclick="showApplyment('{{ apply }}')">
+                      <input type='radio'>{{ apply }}
+                    </label>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-8">
+              <form class='basic-grey' style='margin:40px;height:400px; margin-left:0px; margin-right:0px'>
+                <h4>申请详情</h4>
+                <label clear='both'>
+                  <span style='margin:0px; padding:0px; margin-top:13px'>学生姓名：</span>
+                  <input type="text" id='apply_stu_name' disabled='disabled'>
+                </label>
+                <label clear='both'>
+                  <span style='margin:0px; padding:0px; margin-top:13px'>学生房号：</span>
+                  <input type="text" id='apply_stu_room' disabled='disabled'>
+                </label>
+                <label clear='both'>
+                  <span style='margin:0px; padding:0px; margin-top:13px'>申请类型：</span>
+                  <input type="text" id='apply_stu_type' disabled='disabled'>
+                </label>
+                <label clear='both'>
+                  <span style='margin:0px; padding:0px; margin-top:13px'>目标楼号：</span>
+                  <input type="text" id='apply_stu_destination' disabled='disabled'>
+                </label>
+                <div style="height:50px"></div>
+                <div class="row-fluid" align='center'>
+                  <div class="col-xs-5" style='margin-left:40px'>
+                    <button class="btn btn-danger" id='reject_apply' style='width:100%'>拒绝</button>
+                  </div>
+                  <div class="col-xs-5">
+                    <button class="btn btn-success" id='recept_apply' style='width:100%'>接受</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>        
+
+        <div class="tab-pane fade" id="dorm_distribution">
+          <div class="row-fluid">
+            <div class="col-xs-4">
+              <h4>学生列表</h4>
+              <div style="overflow:auto;width:100%;height:400px;border:1px solid black;border-radius:10px; padding:5px;">
+                <div class="btn-group-vertical" data-toggle="buttons" style='width:100%'>
+                {% for stu in students %}
+                  <label class='btn btn-default' onclick="distributeStu('{{ stu['account'] }}')">
+                    <input type='radio'>{{ stu['name'] }}
+                  </label>
+                {% endfor %}
+                <button class="btn btn-primary" id="auto_distribute">自动分配</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-8">
+              <form class='basic-grey' style='margin:40px;height:400px'>
+                <h4>学生信息</h4>
+                <label clear='both'>
+                  <span style='margin:0px; padding:0px; margin-top:13px'>姓名：</span>
+                  <input type="text" id='dorm_stu_name' disabled='disabled'>
+                </label>
+                <label clear='both'>
+                  <span style='margin:0px; padding:0px; margin-top:13px'>楼号：</span>
+                  <input type="text" disabled='disabled' value="{{  my_building  }}">
+                </label>
+                <label clear:"both" >
+                  <span style='margin:0px; padding:0px; margin-top:13px'>房号：</span>
+                  <input id = "dorm_stu_room" type="text">
+                </label>
+                <label clear:"both" >
+                  <span style='margin:0px; padding:0px; margin-top:13px'>床号：</span>
+                  <input id = "dorm_stu_bed" type="text">
+                </label>
+                <div style='height:70px'></div>
+                <button class="btn btn-success" id = "confirm_distribute">确认</button>
+              </form>
+            </div>
+          </div>
+        </div>        
+
+      <div class="tab-pane fade" id='equipment_fix'>
+        <div class="row-fluid">
+          <div class="col-xs-4">
+            <h4>维修列表</h4>
+            <div style="overflow:auto;width:100%;height:400px;border:1px solid black;border-radius:10px; padding:5px;">
+              <div class="btn-group-vertical" data-toggle="buttons" style='width:100%'>
+                {% for repair in repair_applyments %}
+                  <label class='btn btn-default' onclick="showRepairApplyment('{{ repair }}')">
+                    <input type='radio'>{{ repair }}
+                  </label>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-8">
+            <form class='basic-grey' style='margin:40px;height:400px; margin-right:0px; margin-left:0px'>
+              <h4>维修详情</h4>
+              <label style='clear:both'>
+                <span>名称 :</span>
+                <input id="repair_name" type="text" disabled="dsiabled">
+              </label>
+              <label style='clear:both'>
+                <span>报修日期 :</span>
+                <input id="repair_time" type="text" disabled="dsiabled">
+              </label>
+              <label style='clear:both'>
+                <span>设备ID :</span>
+                <input id="repair_equip_id" type="text" disabled="dsiabled">
+              </label>
+              <label style='clear:both'>
+                <span>所在房间 :</span>
+                <input id="repair_room_num" type="text" disabled="dsiabled">
+              </label>
+              <label style='clear:both'>
+                <span>反馈：</span>
+                <textarea id="repair_feedback" type="text" style='height:100px'></textarea>
+              </label>
+              <div class="row-fluid" align='center'>
+                  <div class="col-xs-5" style='margin-left:40px'>
+                    <button class="btn btn-danger" id='fix_failed' style='width:100%'>失败</button>
+                  </div>
+                  <div class="col-xs-5">
+                    <button class="btn btn-success" id='fix_success' style='width:100%'>成功</button>
+                  </div>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane fade" id="process_room">
+        <div class="row-fluid">
+          <div class="col-xs-4">
+            <h4>房间列表</h4>
+            <div style="overflow:auto;width:100%;height:400px;border:1px solid black;border-radius:10px; padding:5px;">
+              <div class="btn-group-vertical" data-toggle="buttons" style='width:100%'>
+              {% for room in rooms %}
+                <label class='btn btn-default' onclick="showRoom('{{ room }}')">
+                  <input type='radio'>{{ room }}
+                </label>
+              {% endfor %}
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-xs-8">
+            <form class='basic-grey' style='margin:40px;height:400px; margin-left:0px'>
+              <h4>房间信息</h4>
+              <label style='clear:both'>
+                <span>房号 :</span>
+                <input id="process_room_num" type="text" disabled='disabled'>
+              </label>
+              <label style='clear:both'>
+                <span>容量 :</span>
+                <input id="process_room_capacity" type="text">
+              </label>
+              <div style='height:60px'></div>
+              <button class='btn btn-success' id='change_capacity'>确认</button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="tab-pane fade" id="process_displine">
+        <div class="row-fluid">
+          <div class="col-xs-4">
+            <h4>学生列表</h4>
+            <div style="overflow:auto;width:100%;height:400px;border:1px solid black;border-radius:10px; padding:5px;">
+              <div class="btn-group-vertical" data-toggle="buttons" style='width:100%'>
+              {% for stu in students %}
+                <label class='btn btn-default' onclick="penalize('{{ stu['account'] }}')">
+                  <input type='radio'>{{ stu['name'] }}
+                </label>
+              {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-8">
+            <form class='basic-grey' style='margin:40px;height:400px; margin-left:0px'>
+              <h4>违纪单</h4>
+              <label style='clear:both'>
+                <span>姓名 :</span>
+                <input id="penalty_name" type="text" disabled='disabled'>
+              </label>
+              <label style='clear:both'>
+                <span>违纪时间 :</span>
+                <input id="penalty_time" type="text">
+              </label>
+              <label style='clear:both'>
+                <span>违纪详情：</span>
+                <textarea id = 'penalty_content' style='height:100px'></textarea>
+              </label>
+              <div style='height:60px'></div>
+              <button class='btn btn-success' id='confirm_penalty'>确认</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      </div>
+      <script>
+        $(function () {
+          $('#myTab li:eq(1) a').tab('show');
+        });
+
+        $('document').ready(function ()
+          {
+            Cookies.set('building_num',{{  my_building  }});
+          });
+      </script>
+      <script src='js/admin.js'></script>
+    </div>
+    <div style='position: fixed; bottom: 20px;right: 20px; opacity: 0.8;'>
+            <button class='btn' style='background-color:black; height:70px; width:70px' onclick='inPageRefresh()'>
+              <i class='ion-refresh' style='font-size:40px;color:grey;'></i>
+            </button>
+    </div>
+  </div><!-- /.container -->
+
+
+
+    <!-- Placed at the end of the document so the pages load faster -->
+
+
+    <!-- set background picture -->
+    <script src="/js/backstretch.min.js"></script>
+    <script src="/js/set_bg.js"></script>
+
+  </body>
+</html>

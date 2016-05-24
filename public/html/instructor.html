@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="Database project">
+    <meta name="author" content="Jingchen_Cao">
+
+    <title>辅导员登录</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/html/starter-template.css" rel="stylesheet">
+
+    <!-- ioicon include -->
+    <link href="/icon/ionicons-2.0.1/css/ionicons.min.css" rel="stylesheet">
+
+    <!-- font awesome include -->
+    <link href="/icon/font-awesome-4.6.1/css/font-awesome.min.css" rel='stylesheet'>
+    
+    <!-- 详细信息显示用css -->
+    <link rel="stylesheet" href="/html/advanced-template.css">
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <script src="/js/jquery.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    
+    <!-- js-cookie -->
+    <script src="/js/js.cookie-2.1.1.min.js"></script>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">宿舍管理系统</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="index.html">主页</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><a href="author.html">作者</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="starter-template">
+        <h1>宿舍管理系统</h1>
+        <p class="lead">辅导员模式</p>
+      </div>
+
+        <div class="col-sm-7">
+
+          <ul id="myTab" class="nav nav-tabs">
+             <li class="active"><a href="#home" data-toggle="tab">
+                个人信息</a>
+             </li>
+             <li><a href="#doc" data-toggle="tab">权限说明</a></li>
+             <li class="dropdown">
+                <a href="#" id="default" class="dropdown-toggle" 
+                   data-toggle="dropdown">操作<b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+                   <li>
+                     <a href="#request_dorm_info" tabindex="-1" data-toggle='tab' id='refreshTab1'>查询学生住宿情况</a>
+                   </li>
+                   <li>
+                      <a href="#process_dorm_apply" tabindex="-1" data-toggle="tab" id='refreshTab2'>处理换宿、退宿申请</a>
+                   </li>
+                   <li>
+                      <a href="#amend_stu_info" tabindex="-1" data-toggle="tab" id='refreshTab3'>修改学生信息</a>
+                   </li>
+                   <li>
+                      <a href="#request_stu_displine" tabindex='-1' data-toggle='tab' id='refreshTab4'>查询违纪情况</a>
+                   </li>
+                </ul>
+             </li>
+          </ul>
+          <div id="myTabContent" class="tab-content">
+             <div class="tab-pane fade in active" id="home">
+                <h3>我的个人信息</h3>
+                <p>账户名：{{  my_username  }}</p>
+                <p>姓名：{{  my_name|title  }}</p>
+                <p>管理班级：{{  my_class  }}</p>
+                <p>学生人数：{{  my_stu_num  }}</p>
+                <label style='clear:both'>
+                  <span>修改密码 :</span>
+                  <input id="change_pwd" type="text">
+                </label>
+                <button class="btn btn-primary" id="confirm_change_pwd">确认</button>
+             </div>
+             <div class="tab-pane fade" id="doc">
+                <p>•录入学生的基本信息（学号、姓名、班级、学院)</p>
+                <p>•查询学生的住宿情况</p>
+                <p>•处理学生的更换宿舍申请、退宿申请</p>
+                <p>•查询学生的违纪情况</p>
+             </div>
+             <div class="tab-pane fade" id="request_stu_displine">
+                <h3>学生违纪情况</h3>
+
+                <div class="row-fluid">
+                  <div class="col-xs-4">
+                    <h4>违纪列表</h4>
+                    <div style="overflow:auto;width:100%;height:400px;border:1px solid black;border-radius:10px; padding:5px;">
+                       <div class="btn-group-vertical" data-toggle="buttons" style='width:100%'>
+                        {% for dis in disciplines %}
+                        <label class="btn btn-default" onclick="showDis('{{ dis['id']'}}')">
+                          <input type='radio'>{{ dis['id'] }},{{ dis['name'] }}
+                        </label>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xs-8">
+                    <form class='basic-grey' style='margin:40px;height:400px; margin-left:0px; margin-right:0px'>
+                      <h4>违纪信息</h4>
+                      <label style='clear:both'>
+                        <span>姓名 :</span>
+                        <input id="dis_student_name" type="text" disabled="disabled">
+                      </label>
+                      <label style='clear:both'>
+                        <span>学号 :</span>
+                        <input id="dis_student_num" type="text" disabled="disabled">
+                      </label>
+                      <label style="clear:both">
+                        <span>违纪时间：</span>
+                        <input type="text" id="dis_time" disabled="disabled">
+                      </label>
+                      <label style="clear:both">
+                        <span>违纪内容：</span>
+                        <textarea type="text" id="dis_content" disabled="disabled"></textarea>
+                      </label>
+                    </form>
+                  </div>
+                </div>
+
+             </div>
+             <div class="tab-pane fade" id="process_dorm_apply">
+                <h3>处理换宿退宿申请</h3>
+
+                <div class="row-fluid">
+                  <div class="col-xs-4">
+                    <h4>申请列表</h4>
+                    <div style="overflow:auto;width:100%;height:400px;border:1px solid black;border-radius:10px; padding:5px;">
+                      <div class="btn-group-vertical" data-toggle="buttons" style='width:100%'>
+                        {% for apply in applyments %}
+                        <label class='btn btn-default' onclick="showApply('{{ apply }}')">
+                          <input type='radio'>{{ apply }}
+                        </label>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xs-8">
+                    <form class='basic-grey' style='margin:40px;height:400px; margin-left:0px; margin-right:0px'>
+                      <h4>申请信息</h4>
+                      <label style='clear:both'>
+                        <span>姓名 :</span>
+                        <input id="apply_student_name" type="text" disabled="disabled">
+                      </label>
+                      <label style='clear:both'>
+                        <span>楼号 :</span>
+                        <input id="apply_student_building" type="text" disabled="disabled">
+                      </label>
+                      <label style='clear:both'>
+                        <span>房号 :</span>
+                        <input id="apply_student_room" type="text" disabled="disabled">
+                      </label>
+                      <label style="clear:both">
+                        <span>申请类型：</span>
+                        <input type="text" id="apply_type" disabled="disabled">
+                      </label>
+                      <label style="clear:both">
+                        <span>目标楼号：</span>
+                        <input type="text" id="apply_destination" disabled="disabled">
+                      </label>
+                      <div style="height:30px"></div>
+                      <button class='btn btn-success' id='confirm_apply'>确认</button>
+                    </form>
+                  </div>
+                </div>
+
+             </div>
+             <div class="tab-pane fade" id='amend_stu_info'>
+                <h3>修改学生信息</h3>
+
+                <div class="row-fluid">
+                  <div class="col-xs-4">
+                    <h4>学生列表</h4>
+                    <div style="overflow:auto;width:100%;height:400px;border:1px solid black;border-radius:10px; padding:5px;">
+                      <div class="btn-group-vertical" data-toggle="buttons" style='width:100%'>
+                        {% for stu in students %}
+                        <label class='btn btn-default' onclick="showStudentInfo('{{ stu['account'] }}')">
+                          <input type='radio'>{{ stu['name'] }}
+                        </label>
+                        {% endfor %}
+                        <label class='btn btn-default' onclick="showStudentInfo('NULL')">
+                          <input type='radio'>新建学生
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-xs-8">
+                    <form class='basic-grey' style='margin:40px;height:400px'>
+                      <h4>学生信息</h4>
+                      <label style='clear:both'>
+                        <span>姓名 :</span>
+                        <input id="student_name" type="text">
+                      </label>
+                      <label style='clear:both'>
+                        <span>班级 :</span>
+                        <input id="student_class" type="text">
+                      </label>
+                      <label style='clear:both'>
+                        <span>学号 :</span>
+                        <input id="student_num" type="text">
+                      </label>
+                      <label style='clear:both'>
+                        <span>学院 :</span>
+                        <input id="student_college" type="text">
+                      </label>
+                      <label style='clear:both'>
+                        <span>楼号 :</span>
+                        <input id="student_building" type="text">
+                      </label>
+                      <div style='height:70px'></div>
+                      <button class='btn btn-success' id='changeStu'>确认</button>
+                    </form>
+                  </div>
+                </div>
+
+             </div>
+             <div class="tab-pane fade" id='request_dorm_info'>
+               <h3>查询学生宿舍信息</h3>
+
+               <div class="row-fluid">
+                  <div class="col-xs-4">
+                    <h4>学生列表</h4>
+                    <div style="overflow:auto;width:100%;height:400px;border:1px solid black;border-radius:10px; padding:5px;">
+                      <div class="btn-group-vertical" data-toggle="buttons" style='width:100%'>
+                        {% for stu in students %}
+                        <label class='btn btn-default' onclick="showStudentDormitory('{{ stu['account'] }}')">
+                          <input type='radio'>{{ stu['name'] }}
+                        </label>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xs-8">
+                    <form class='basic-grey' style='margin:40px;height:400px'>
+                      <h4>学生信息</h4>
+                      <p>姓名：<span id='dorm_stu_name'></span></p>
+                      <p>楼号：<span id='dorm_stu_building'></span></p>
+                      <p>房号：<span id='dorm_stu_room'></span></p>
+                      <p>床号：<span id='dorm_stu_bed'></span></p>
+                      <div>
+                        <img src="/image/zhuangbility.jpg" style='height:200px; width:250px'>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                
+             </div>
+          </div>
+          <script>
+             $(function () {
+                $('#myTab li:eq(1) a').tab('show');
+             });
+          </script>
+          <div style='position: fixed; bottom: 20px;right: 20px; opacity: 0.8;'>
+            <button class='btn' style='background-color:black; height:70px; width:70px' onclick='inPageRefresh()'>
+              <i class='ion-refresh' style='font-size:40px;color:grey;'></i>
+            </button>
+          </div>
+        </div>
+
+    </div><!-- /.container -->
+    <script src='/js/instructor.js'></script>
+
+    
+    <!-- Placed at the end of the document so the pages load faster -->
+    
+
+    <!-- set background picture -->
+    <script src="/js/backstretch.min.js"></script>
+    <script src="/js/set_bg.js"></script>
+
+  </body>
+</html>
