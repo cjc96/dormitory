@@ -32,9 +32,7 @@ app.use(express.static('public'));
 /* 主页重定向 */
 app.get('/', function(req, res) 
 {
-  res.redirect("html/index.html");
-  var str = "'haha' null #";
-  console.log(database.escape(str));
+  res.redirect("/html/index.html");
   res.end();
 });
 
@@ -139,7 +137,7 @@ app.get('/loadAdmin', function (req, res)
                       applymentList.push(res5[i].apply_id);
                     }
                     swigRespond['applyments'] = applymentList;
-                    query_string = "select room_num from dorm where building_num = " + parseInt(req.cookies.building_num) + ";";
+                    query_string = "select room_num from dorm where building_num = " + res1[0].building_num + ";";
                     database.query(query_string, function (err, res6)
                       {
                         var roomList = new Array();
