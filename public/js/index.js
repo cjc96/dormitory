@@ -3,6 +3,16 @@ document.getElementById("sign_up").onclick = function ()
   location.href = "reg.html";
 };
 
+function KeyDown()
+{
+  if (event.keyCode == 13)
+  {
+    event.returnValue=false;
+    event.cancel = true;
+    $('#login').click();
+  }
+}
+
 $('#login').click(function ()
   {
     $.post('/login', 
