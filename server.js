@@ -826,7 +826,20 @@ app.post('/changeAdmin', urlencodedParser, function (req, res)
         }
         else
         {
-          res.end('success');
+          query_string = "update dorm set admin_account_username = " + database.escape(req.body.username) + " where building_num = " + database.escape(req.body.building_num) +";";
+          database.query(query_string, function (err, res2)
+            {
+              if (err)
+              {
+                console.log(query_string);
+                res.end();
+              }
+              else
+              {
+                res.end('success');
+              }
+            });
+          
         }
       });
   });
