@@ -14,7 +14,7 @@ var database = db.createConnection({
 });
 database.connect(function (err)
 {
-    if (err) 
+    if (err)
     {
       console.error('error connecting: ' + err.stack);
       return;
@@ -27,14 +27,52 @@ var cookieParser = require('cookie-parser');
 app.use(cookieParser());
 /* 使用静态文件中间件 */
 app.use(express.static('public'));
+// 文件上传控制
+var multer = require('multer');
+var upload = multer({ dest: 'uploads/' });
+var execute = require('child_process').exec;
+
 
 /* 以下正文 */
+// socket.io相关
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
+app.get("/message", function(req, res)
+  {
+    res.sendfile("public/html/message.html", function ()
+      {
+        res.end();
+      });
+  });
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+});
+
+
 /* 主页重定向 */
-app.get('/', function(req, res) 
+app.get('/', function(req, res)
 {
   res.redirect("/html/index.html");
   res.end();
 });
+
+app.get("/downloadXML", function (req, res)
+  {
+    execute("/usr/local/mysql/bin/mysql -X -u root --password=shcjcis96 -e 'use dormitory; select * from account; select * from student; select * from instructor; select * from admin;' > download.xml", function (err, stdout, stderr)
+      {
+        res.download("download.xml", function (err)
+          {
+            console.log(err);
+            console.log(1);
+            res.end();
+          });
+      });
+  });
 
 // 自动分配
 app.get('/autoDistribute', function(req, res)
@@ -54,7 +92,7 @@ app.get('/autoDistribute', function(req, res)
               {
                 respond = "床位不足";
               }
-              else if (res1.length = res2.length)
+              else if (res1.length == res2.length)
               {
                 respond = "床位正好";
               }
@@ -69,7 +107,7 @@ app.get('/autoDistribute', function(req, res)
                 // console.log(query_string);
                 database.query(query_string, function ()
                   {
-                      if (++count == limit) 
+                      if (++count == limit)
                       {
                         res.end(respond);
                       }
@@ -150,7 +188,7 @@ app.get('/loadAdmin', function (req, res)
                         res.end(temp);
                       });
                     
-                  })
+                  });
                 });
             });
         });
@@ -210,7 +248,7 @@ app.get('/loadStudent', function (req, res)
                         swigRespond['equipments'] = equipmentList;
                         var temp = swig.renderFile('public/html/student.html', swigRespond);
                         res.end(temp);
-                      })
+                      });
                       
                     });
                 });
@@ -312,11 +350,17 @@ app.get('/loadInstructor', function(req,res)
                   res.end(temp);
                 });
             });
-        })
+        });
       });
   });
 
 /* 处理post请求 */
+
+app.post("/uploadXML", upload.single('avatar'), function (req, res)
+  {
+    console.log(avatar);
+    res.end();
+  });
 
 app.post("/changeCapacity", urlencodedParser, function (req, res)
   {
@@ -333,7 +377,7 @@ app.post("/changeCapacity", urlencodedParser, function (req, res)
                 console.log(query_string);
               }
               res.end();
-            }); 
+            });
         }
         else
         {
@@ -428,7 +472,7 @@ app.post('/newFix', urlencodedParser, function (req, res)
                     console.log(query_string);
                   }
                   res.end();
-                })
+                });
               }
             });
         }
@@ -488,7 +532,7 @@ app.post('/confirmApply', urlencodedParser, function (req, res)
         query_string = "select type, destination, student_account_username from applyment where id = " + database.escape(req.body.id) + ";";
         database.query(query_string, function (err, res2)
           {
-            if (res2[0].type = "abandon")
+            if (res2[0].type == "abandon")
             {
               query_string = "update student set dorm_room_num = null, dorm_building_num = null where account_username = " + database.escape(res2[0].student_account_username) + ";";
               database.query(query_string, function (err, res3)
@@ -597,7 +641,7 @@ app.post('/newDiscipline', urlencodedParser, function (req, res)
         res.end();
       });
   });
-})
+});
 
 // 分配学生宿舍
 app.post('/distributeStudent', urlencodedParser, function (req, res)
@@ -615,7 +659,7 @@ app.post('/distributeStudent', urlencodedParser, function (req, res)
               console.log(query_string);
             }
             res.end();
-          })
+          });
         }
         else
         {

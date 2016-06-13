@@ -1,6 +1,23 @@
 var current_instructor = new String();
 var current_administrator = new String();
 
+$("#confirm_export_xml").click(function ()
+	{
+		console.log($('#import_xml').val());
+		$.post("uploadXML",
+			{
+				file : $('#import_xml').val()
+			}, function (data, status)
+			{
+				console.log(status);
+			});
+	});
+
+$('#export_xml').click(function ()
+	{
+		window.location = 'downloadXML';
+	});
+
 function showInstr(username)
 {
 	current_instructor = username;
@@ -14,15 +31,6 @@ function showInstr(username)
 
 	return false;
 }
-
-$('document').ready(function ()
-	{
-		console.log('hehe');
-		$.get('/haha', function (data, status)
-		{
-			console.log('hahaha');
-		});
-	});
 
 function showAdmin(username)
 {
