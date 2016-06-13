@@ -35,23 +35,6 @@ var execute = require('child_process').exec;
 
 /* 以下正文 */
 // socket.io相关
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-
-app.get("/message", function(req, res)
-  {
-    res.sendfile("public/html/message.html", function ()
-      {
-        res.end();
-      });
-  });
-
-io.on('connection', function(socket){
-  console.log('a user connected');
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
-  });
-});
 
 
 /* 主页重定向 */
